@@ -32,7 +32,7 @@ export default function NewTrip() {
       router.push("/dashboard")
     } 
     else {
-      alert("Something went wrond!")
+      alert("You need to fill all rows below!")
       setLoading(false)
     }
   }

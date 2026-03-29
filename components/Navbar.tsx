@@ -10,7 +10,7 @@ export default function Navbar () {
                 <Link href="/" className="text-gray-400 hover:text-white transition-colors">
                     Home
                 </Link>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
                     My Trips
                 </Link>
             </div>
