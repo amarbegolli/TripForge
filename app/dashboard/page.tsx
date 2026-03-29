@@ -1,3 +1,6 @@
+import Link from "next/link"
+
+
 const trips = [
     {id: 1, destination: "Paris, France", dates: "Jun 10 - Jun 17", status: "Upcoming", emoji: "🗼"},
     {id: 2, destination: "Tokyo, Japan", dates: "Sep 23 - Sep 30", status: "Planned", emoji: "🏯"},
@@ -20,9 +23,11 @@ export default function Dashboard () {
                 <h1 className="text-4xl font-bold text-white">My Trips</h1>
                 <p className="text-gray-400 mt-1"> Trips Planned</p>
                 </div>
+                <Link href="/new-trip">
                 <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold transition-colors shadow-lg">
                     + New Trip
                 </button>
+                </Link>
             </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
