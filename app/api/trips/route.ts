@@ -32,3 +32,12 @@ export async function GET() {
     })    
     return NextResponse.json(trips)
 }
+
+export async function DELETE(req: NextRequest) {
+    const { id } = await req.json()
+
+    await prisma.trip.delete({
+        where: { id },
+    })
+    return NextResponse.json({ success: true })
+}

@@ -1,19 +1,45 @@
-import Link from "next/link"
-import { prisma } from "@/lib/prisma"
+"use client"
 
+import { useEffect, useState } from "react"
+import Link from "next/link"
 
 const statusColors: Record<string, string> = {
-    Upcoming: "bg-blue-500/20 text-blue-400",
-    Planned: "bg-yellow-500/20 text-yellow-400",
-    Completed: "bg-green-500/20 text-green-400"
+  Upcoming: "bg-blue-500/20 text-blue-400",
+  Planning: "bg-yellow-500/20 text-yellow-400",
+  Completed: "bg-green-500/20 text-green-400",
 }
 
-export default async function Dashboard () {
-    const trips = await prisma.trip.findMany({
-        orderBy: { createdAt: "desc"},
+type Trip = {
+  id: string
+  destination: string
+  startDate: string
+  endDate: string
+  interests: string
+  status: string
+}
+
+export default function Dashboard() {
+  const [trips, setTrips] = useState<Trip[]>([])
+
+  useEffect(() => {
+    fetch("/api/trips")
+      .then((res) => res.json())
+      .then((data) => setTrips(data))
+  }, [])
+
+  async function deleteTrip(id: string) {
+    if (!confirm("Are you sure you want to delete this trip?")) return
+
+    await fetch("/api/trips", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
     })
 
-    return (
+    setTrips(trips.filter((t) => t.id !== id))
+  }
+
+  return (
     <main className="min-h-screen bg-gray-950 text-white">
       <div className="max-w-5xl mx-auto px-6 py-12">
 
@@ -36,11 +62,17 @@ export default async function Dashboard () {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {trips.map((trip: any) => (
+            {trips.map((trip) => (
               <div
                 key={trip.id}
-                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-orange-500/50 hover:bg-gray-800 transition-all cursor-pointer group"
+                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-orange-500/50 hover:bg-gray-800 transition-all group relative"
               >
+                <button
+                  onClick={() => deleteTrip(trip.id)}
+                  className="absolute top-4 right-4 text-gray-600 hover:text-red-400 transition-colors text-lg"
+                >
+                  ✕
+                </button>
                 <div className="text-4xl mb-4">✈️</div>
                 <h2 className="text-xl font-semibold text-white group-hover:text-orange-400 transition-colors">
                   {trip.destination}
@@ -63,7 +95,6 @@ export default async function Dashboard () {
             ))}
           </div>
         )}
-
       </div>
     </main>
   )
