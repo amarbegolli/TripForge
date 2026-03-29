@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 
 export default function NewTrip() {
     const router = useRouter()
+    const [loading, setLoading] = useState(false)
 
     const [formData, setFormData] = useState({
         destination: "",
@@ -17,11 +18,25 @@ export default function NewTrip() {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    function handleSubmit(e: React.FormEvent) {
-        e.preventDefault()
-        console.log("Trip data:", formData)
-        router.push("/dashboard")
+    async function handleSubmit(e: React.FormEvent) {
+      e.preventDefault()
+      setLoading(true)
+    
+    const res = await fetch("/api/trips", {
+      method: "POST",
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(formData),
+    })
+
+    if (res.ok) {
+      router.push("/dashboard")
+    } 
+    else {
+      alert("Something went wrond!")
+      setLoading(false)
     }
+  }
+
 
 
     return (
@@ -82,7 +97,7 @@ export default function NewTrip() {
             type="submit"
             className="bg-orange-500 hover:bg-orange-600 text-white py-4 rounded-xl font-semibold text-lg transition-colors"
           >
-            Generate Trip with AI ✨
+            Generate Trip with AI
           </button>
 
         </form>
