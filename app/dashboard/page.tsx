@@ -3,10 +3,23 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 
-const statusColors: Record<string, string> = {
-  Upcoming: "bg-blue-500/20 text-blue-400",
-  Planning: "bg-yellow-500/20 text-yellow-400",
-  Completed: "bg-green-500/20 text-green-400",
+
+function getTripStatus(startDate: string, endDate: string): string {
+  const today = new Date()
+  today.setHours(0, 0, 0, 0,)
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+
+  if (today < start) return "Upcoming"
+  if (today >= start && today <= end) return "Active"
+  return "Completed"
+}
+
+function getStatusStyle(status: string): string {
+  if (status === "Upcoming") return "bg-blue-500/30 text-blue-300"
+  if (status === "Active") return "bg-orange-500/30 text-orange-300"
+  if (status === "Completed") return "bg-green-500/30 text-green-300"
+  return "bg-yellow-500/30 text-yellow-300"
 }
 
 type Trip = {
@@ -86,10 +99,10 @@ export default function Dashboard() {
                   </p>
                 )}
                 <div className="mt-4 flex items-center justify-between">
-                  <span className={`text-xs px-3 py-1 rounded-full font-medium ${statusColors[trip.status] ?? "bg-gray-500/20 text-gray-400"}`}>
-                    {trip.status}
+                  <span className={`text-xs px-3 py-1 rounded-full font-medium ${getStatusStyle(getTripStatus(trip.startDate, trip.endDate))}`}>
+                    {getTripStatus(trip.startDate, trip.endDate)}
                   </span>
-                  <span className="text-gray-600 group-hover:text-orange-400 transition-colors text-lg">→</span>
+                  <a href={`/trip/${trip.id}`} className="text-gray-600 hover:text-orange-400 transition-colors text-lg">→</a>
                 </div>
               </div>
             ))}
