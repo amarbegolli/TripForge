@@ -10,6 +10,7 @@ datasource db {
 
 model Trip {
   id          String   @id @default(cuid())
+  userId      String
   destination String
   startDate   String
   endDate     String
